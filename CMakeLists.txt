@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(SuperJupiterDeviceHealth VERSION 0.1.0 LANGUAGES CXX)
+project(SuperJupiterDeviceHealth VERSION 0.1.1 LANGUAGES CXX)
 
 set(_superjupiter_device_health_top_level OFF)
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -19,6 +19,9 @@ target_compile_features(SuperJupiterDeviceHealth INTERFACE cxx_std_11)
 
 if(SUPERJUPITER_DEVICE_HEALTH_BUILD_TESTS)
   enable_testing()
+  add_executable(superjupiter-device-health-review tests/review_regressions.cpp)
+  target_link_libraries(superjupiter-device-health-review PRIVATE SuperJupiter::DeviceHealth)
+  add_test(NAME superjupiter-device-health-review COMMAND superjupiter-device-health-review)
   add_executable(superjupiter-device-health-tests tests/test.cpp)
   target_link_libraries(superjupiter-device-health-tests PRIVATE SuperJupiter::DeviceHealth)
   add_test(NAME superjupiter-device-health-tests COMMAND superjupiter-device-health-tests)

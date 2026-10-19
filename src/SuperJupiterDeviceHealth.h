@@ -2,39 +2,28 @@
 // Copyright (c) 2026 SuperJupiter
 #ifndef SUPERJUPITER_DEVICE_HEALTH_H
 #define SUPERJUPITER_DEVICE_HEALTH_H
-#if defined(__FAST_MATH__) || (defined(__FINITE_MATH_ONLY__) && __FINITE_MATH_ONLY__ > 0)
+#if defined(__FAST_MATH__) ||                                                  \
+    (defined(__FINITE_MATH_ONLY__) && __FINITE_MATH_ONLY__ > 0)
 #error "SuperJupiter requires IEEE non-finite checks; disable fast-math"
 #endif
-#include <float.h>
-#include <math.h>
 #include <stddef.h>
 #include <stdint.h>
-#define SUPERJUPITER_DEVICE_HEALTH_VERSION "0.1.0"
+#define SUPERJUPITER_DEVICE_HEALTH_VERSION "0.1.1"
 namespace superjupiter {
 namespace device_health {
 
-namespace detail {
-inline bool finite(double value) { return value == value && value >= -DBL_MAX && value <= DBL_MAX; }
-inline double oneMinusExpNegative(double ratio) {
-  // Stable at small elapsed/tau without requiring AVR's unavailable expm1.
-  if (ratio < 0.01) {
-    double term = ratio, total = ratio;
-    for (unsigned n = 2; n <= 12; ++n) {
-      term *= -ratio / n;
-      total += term;
-    }
-    return total;
-  }
-  return 1 - ::exp(-ratio);
-}
-} // namespace detail
-
 enum class Status { Ok, NoSample, Stale, InvalidTime, InvalidConfig };
-enum class Counter { DroppedRecords, StorageFailures, UploadFailures, Restarts };
+enum class Counter {
+  DroppedRecords,
+  StorageFailures,
+  UploadFailures,
+  Restarts
+};
 struct Snapshot {
   Status status;
   uint32_t sampleAgeMs, largestIntervalMs;
-  uint64_t samples, gaps, droppedRecords, storageFailures, uploadFailures, restarts;
+  uint64_t samples, gaps, droppedRecords, storageFailures, uploadFailures,
+      restarts;
   size_t queueHighWater;
   bool saturated;
 };
@@ -51,12 +40,14 @@ class DeviceHealth {
   }
 
 public:
-  DeviceHealth(uint32_t expectedIntervalMs, uint32_t toleranceMs, uint32_t staleAfterMs)
-      : expected_(expectedIntervalMs), tolerance_(toleranceMs), stale_(staleAfterMs), last_(0),
-        largest_(0), seen_(false), saturated_(false), samples_(0), gaps_(0), counters_{}, high_(0) {
-  }
+  DeviceHealth(uint32_t expectedIntervalMs, uint32_t toleranceMs,
+               uint32_t staleAfterMs)
+      : expected_(expectedIntervalMs), tolerance_(toleranceMs),
+        stale_(staleAfterMs), last_(0), largest_(0), seen_(false),
+        saturated_(false), samples_(0), gaps_(0), counters_{}, high_(0) {}
   bool valid() const {
-    return expected_ > 0 && static_cast<uint64_t>(expected_) + tolerance_ < 0x80000000ULL &&
+    return expected_ > 0 &&
+           static_cast<uint64_t>(expected_) + tolerance_ < 0x80000000ULL &&
            stale_ > 0 && stale_ < 0x80000000UL;
   }
   Status recordSample(uint32_t atMs) {
