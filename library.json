@@ -1,0 +1,49 @@
+{
+  "name": "SuperJupiterDeviceHealth",
+  "version": "0.1.0",
+  "description": "Observable sampling gaps, queue pressure and bounded failure counters. Portable C++11 by SuperJupiter. Hardware validation pending.",
+  "keywords": [
+    "sensor",
+    "embedded",
+    "esp32",
+    "arduino",
+    "device-health"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Super-Jupiter/superjupiter-device-health.git"
+  },
+  "homepage": "https://github.com/Super-Jupiter/superjupiter-device-health",
+  "authors": [
+    {
+      "name": "SuperJupiter",
+      "url": "https://www.superjupiter.net",
+      "maintainer": true
+    }
+  ],
+  "license": "MIT",
+  "frameworks": "*",
+  "platforms": "*",
+  "headers": [
+    "SuperJupiterDeviceHealth.h"
+  ],
+  "export": {
+    "include": [
+      "src/*",
+      "examples/*",
+      "docs/*",
+      "tests/*",
+      "tools/*",
+      "README.md",
+      "LICENSE",
+      "CHANGELOG.md",
+      "CONTRIBUTING.md",
+      "SECURITY.md",
+      "CMakeLists.txt",
+      "library.json",
+      "library.properties",
+      "cmake/*",
+      "extras/*"
+    ]
+  }
+}
